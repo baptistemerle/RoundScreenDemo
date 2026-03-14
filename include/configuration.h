@@ -1,6 +1,7 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#include "ble_configuration.h"
 #include "GC9A01_driver_configuration.h"
 #include "QMI8658_driver_configuration.h"
 
@@ -40,6 +41,16 @@ namespace Configuration
       .range =   SensorQMI8658::ACC_RANGE_4G,
       .odr =     SensorQMI8658::ACC_ODR_1000Hz,
       .lpfMode = SensorQMI8658::LPF_MODE_0,
+    };
+  }
+
+  namespace BLE
+  {
+    static const BLE_Configuration defaultConfiguration =
+    {
+      .name =                     "Dashboard",
+      .serviceUUID =              "4fafc201-1fb5-459e-8fcc-c5c9c331914b",
+      .configurationChannelUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8",
     };
   }
 }
