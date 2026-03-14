@@ -1,8 +1,6 @@
 #ifndef IACCELEROMETER_H
 #define IACCELEROMETER_H
 
-//#include <stdint.h>
-
 class IAccelerometer
 {
 public:

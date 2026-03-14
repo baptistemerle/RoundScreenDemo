@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "accelerometer_controller.h"
 #include "ble_controller.h"
 #include "connectivity_controller.h"
 #include "configuration.h"
@@ -21,6 +22,7 @@ ConnectivityController connectivityController(bleController);
 
 DashBoardState dashBoardState;
 ConfigurationController configurationController(dashBoardState);
+AccelerometerController accelerometerController(qmi8658, dashBoardState);
 
 static void lv_tick_task(void *arg)
 {
@@ -39,6 +41,11 @@ void setup()
   {
     Serial.println("Update dashboard with limit");
     dashBoard.updateLabel("Limit : " + std::to_string(newLimit));
+  });
+
+  dashBoardState.arcValue.attach([](const int& arcValue)
+  {
+    dashBoard.updateArc(constrain(arcValue, 0, 100));
   });
 
   // Wait serial port for max 4s if needed
@@ -82,14 +89,7 @@ void loop()
 
   bleController.process();
 
-  float accX, accY, accZ;
-
-  if (qmi8658.getValues(accX, accY, accZ))
-  {
-    int arcVal = map(accX * 100, -100, 100, 0, 100);
-    dashBoard.updateArc(constrain(arcVal, 0, 100));
-    Serial.printf("X: %.2f  Y: %.2f  Z: %.2f\n", accX, accY, accZ);
-  }
+  accelerometerController.update();
 
   delay(5);
 }

@@ -6,6 +6,7 @@
 struct DashBoardState
 {
   ObservableValue<int> limit { 0 };
+  ObservableValue<int> arcValue { 0 };
 };
 
 #endif // DASHBOARD_STATE_H
