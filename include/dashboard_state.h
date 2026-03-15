@@ -5,8 +5,11 @@
 
 struct DashBoardState
 {
-  ObservableValue<int> limit { 0 };
-  ObservableValue<int> arcValue { 0 };
+  ObservableValue<int>   limit { 0 };
+  ObservableValue<float> accelerometerXValue { 0 };
+  ObservableValue<float> accelerometerYValue { 0 };
+  ObservableValue<float> accelerometerZValue { 0 };
+  ObservableValue<bool>  bluetootDeviceConnected { false };
 };
 
 #endif // DASHBOARD_STATE_H

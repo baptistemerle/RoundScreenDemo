@@ -7,7 +7,7 @@ MainApp::MainApp()
   , m_qmi8658(Configuration::Accelerometer::defaultConfiguration)
   , m_displayEngine(m_displayDriver)
   , m_bleController(Configuration::BLE::defaultConfiguration)
-  , m_connectivityController(m_bleController)
+  , m_connectivityController(m_bleController, m_dashBoardState)
   , m_configurationController(m_dashBoardState)
   , m_accelerometerController(m_qmi8658, m_dashBoardState)
 {}
@@ -23,12 +23,27 @@ void MainApp::setup()
   m_dashBoardState.limit.attach([this](const int& newLimit)
   {
     Serial.println("Update dashboard with limit");
-    m_dashBoard.updateLabel("Limit : " + std::to_string(newLimit));
+    m_dashBoard.updateLimitLabel(newLimit);
   });
 
-  m_dashBoardState.arcValue.attach([this](const int& arcValue)
+  m_dashBoardState.accelerometerXValue.attach([this](const float& xValue)
   {
-    m_dashBoard.updateArc(constrain(arcValue, 0, 100));
+    m_dashBoard.updateXAxisValue(map(xValue * 100, -100, 100, 0, 100));
+  });
+
+  m_dashBoardState.accelerometerYValue.attach([this](const float& yValue)
+  {
+    m_dashBoard.updateYAxisValue(map(yValue * 100, -100, 100, 0, 100));
+  });
+
+  m_dashBoardState.accelerometerZValue.attach([this](const float& zValue)
+  {
+    m_dashBoard.updateZAxisValue(map(zValue * 100, -100, 100, 0, 100));
+  });
+
+  m_dashBoardState.bluetootDeviceConnected.attach([this](const bool& deviceConnected)
+  {
+    m_dashBoard.updateBluetoothLabel(deviceConnected);
   });
 
   // Wait serial port for max 4s if needed
@@ -61,11 +76,11 @@ void MainApp::setup()
 
   if (accelerometerOK)
   {
-    m_dashBoard.updateLabel("version 2");
+    m_dashBoard.updateVersionLabel("v3");
   }
   else
   {
-    m_dashBoard.updateLabel("QMI init failed");
+    m_dashBoard.updateVersionLabel("QMI Failed");
   }
 }
 

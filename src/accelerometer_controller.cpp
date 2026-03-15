@@ -17,7 +17,8 @@ void AccelerometerController::update()
 
   if (m_accelerometer.getValues(accX, accY, accZ))
   {
-    int arcValue = map(accX * 100, -100, 100, 0, 100);
-    m_dashBoardState.arcValue = arcValue;
+    m_dashBoardState.accelerometerXValue = accX;
+    m_dashBoardState.accelerometerYValue = accY;
+    m_dashBoardState.accelerometerZValue = accZ;
   }
 }

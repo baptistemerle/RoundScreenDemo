@@ -29,10 +29,11 @@ private:
   DisplayEngine m_displayEngine;
   DashBoardUI m_dashBoard;
 
+  DashBoardState m_dashBoardState;
+
   BLEController m_bleController;
   ConnectivityController m_connectivityController;
 
-  DashBoardState m_dashBoardState;
   ConfigurationController m_configurationController;
   AccelerometerController m_accelerometerController;
 };
