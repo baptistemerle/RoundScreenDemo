@@ -50,7 +50,10 @@ void MainApp::setup()
   const esp_timer_create_args_t tick_timer_args =
   {
     .callback = &MainApp::lv_tick_task,
-    .name = "lv_tick"
+    .arg = this,
+    .dispatch_method = ESP_TIMER_TASK,
+    .name = "lv_tick",
+    .skip_unhandled_events = false
   };
   esp_timer_handle_t lv_tick_timer;
   esp_timer_create(&tick_timer_args, &lv_tick_timer);
