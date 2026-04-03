@@ -10,6 +10,7 @@ MainApp::MainApp()
   , m_connectivityController(m_bleController, m_dashBoardState)
   , m_jsonConfigurationParser(m_dashBoardState)
   , m_accelerometerController(m_qmi8658, m_dashBoardState)
+  , m_preferencesController(m_dashBoardState)
 {}
 
 void MainApp::setup()
@@ -73,6 +74,8 @@ void MainApp::setup()
   esp_timer_handle_t lv_tick_timer;
   esp_timer_create(&tick_timer_args, &lv_tick_timer);
   esp_timer_start_periodic(lv_tick_timer, 1000);
+
+  m_preferencesController.init();
 
   if (accelerometerOK)
   {

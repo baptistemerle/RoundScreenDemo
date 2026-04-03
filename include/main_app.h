@@ -9,6 +9,7 @@
 #include "display_engine.h"
 #include "GC9A01_driver.h"
 #include "json_configuration_parser.h"
+#include "preferences_controller.h"
 #include "QMI8658_driver.h"
 
 class MainApp
@@ -36,6 +37,7 @@ private:
 
   JsonConfigurationParser m_jsonConfigurationParser;
   AccelerometerController m_accelerometerController;
+  PreferencesController m_preferencesController;
 };
 
 #endif // MAIN_APP_H
