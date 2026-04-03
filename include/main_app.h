@@ -4,11 +4,11 @@
 #include "accelerometer_controller.h"
 #include "ble_controller.h"
 #include "connectivity_controller.h"
-#include "configuration_controller.h"
 #include "dashboard_state.h"
 #include "dashboard_ui.h"
 #include "display_engine.h"
 #include "GC9A01_driver.h"
+#include "json_configuration_parser.h"
 #include "QMI8658_driver.h"
 
 class MainApp
@@ -34,7 +34,7 @@ private:
   BLEController m_bleController;
   ConnectivityController m_connectivityController;
 
-  ConfigurationController m_configurationController;
+  JsonConfigurationParser m_jsonConfigurationParser;
   AccelerometerController m_accelerometerController;
 };
 

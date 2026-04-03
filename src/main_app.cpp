@@ -8,7 +8,7 @@ MainApp::MainApp()
   , m_displayEngine(m_displayDriver)
   , m_bleController(Configuration::BLE::defaultConfiguration)
   , m_connectivityController(m_bleController, m_dashBoardState)
-  , m_configurationController(m_dashBoardState)
+  , m_jsonConfigurationParser(m_dashBoardState)
   , m_accelerometerController(m_qmi8658, m_dashBoardState)
 {}
 
@@ -16,7 +16,7 @@ void MainApp::setup()
 {
   Serial.begin(115200);
 
-  m_bleController.setConfigurationChunkCallback([this](const std::string& data){ m_configurationController.pushNewData(data); });
+  m_bleController.setConfigurationChunkCallback([this](const std::string& data){ m_jsonConfigurationParser.pushNewData(data); });
   m_bleController.init();
   m_bleController.startAdvertising();
 

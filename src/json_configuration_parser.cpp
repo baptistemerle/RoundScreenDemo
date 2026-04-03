@@ -1,21 +1,21 @@
-#include "configuration_controller.h"
+#include "json_configuration_parser.h"
 
 #include "dashboard_state.h"
 
 #include <ArduinoJson.h>
 
-ConfigurationController::ConfigurationController(DashBoardState& dashBoardState)
+JsonConfigurationParser::JsonConfigurationParser(DashBoardState& dashBoardState)
   : m_dashBoardState(dashBoardState)
   , m_payloadAssembler([this](const std::string& json) { jsonReady(json); })
 {
 }
 
-void ConfigurationController::pushNewData(const std::string& data)
+void JsonConfigurationParser::pushNewData(const std::string& data)
 {
   m_payloadAssembler.pushData(data);
 }
 
-void ConfigurationController::jsonReady(const std::string& json)
+void JsonConfigurationParser::jsonReady(const std::string& json)
 {
   JsonDocument doc;
   DeserializationError error = deserializeJson(doc, json);

@@ -1,14 +1,14 @@
-#ifndef CONFIGURATION_CONTROLLER_H
-#define CONFIGURATION_CONTROLLER_H
+#ifndef JSON_CONFIGURATION_PARSER_H
+#define JSON_CONFIGURATION_PARSER_H
 
 #include "length_payload_assembler.h"
 
 class DashBoardState;
 
-class ConfigurationController
+class JsonConfigurationParser
 {
 public:
-  ConfigurationController(DashBoardState& dashBoardState);
+  JsonConfigurationParser(DashBoardState& dashBoardState);
 
   void pushNewData(const std::string& data);
 
@@ -20,4 +20,4 @@ private:
   LengthPayloadAssembler<4> m_payloadAssembler;
 };
 
-#endif // CONFIGURATION_CONTROLLER_H
+#endif // JSON_CONFIGURATION_PARSER_H
