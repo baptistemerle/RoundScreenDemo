@@ -1,6 +1,6 @@
 #include "json_configuration_parser.h"
 
-#include "dashboard_state.h"
+#include "Core/dashboard_state.h"
 
 #include <ArduinoJson.h>
 

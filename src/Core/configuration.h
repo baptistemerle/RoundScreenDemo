@@ -1,10 +1,10 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#include "ble_configuration.h"
+#include "Connectivity/ble_configuration.h"
 
-#include "Displays/GC9A01_driver_configuration.h"
-#include "Sensors/QMI8658_driver_configuration.h"
+#include <Displays/GC9A01_driver_configuration.h>
+#include <Sensors/QMI8658_driver_configuration.h>
 
 namespace Configuration
 {

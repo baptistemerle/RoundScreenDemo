@@ -1,6 +1,6 @@
 #include "preferences_controller.h"
 
-#include "dashboard_state.h"
+#include "Core/dashboard_state.h"
 
 namespace
 {

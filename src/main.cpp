@@ -1,6 +1,6 @@
 #include <Arduino.h>
 
-#include "main_app.h"
+#include "Core/main_app.h"
 
 MainApp app;
 

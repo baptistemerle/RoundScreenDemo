@@ -1,17 +1,18 @@
 #ifndef MAIN_APP_H
 #define MAIN_APP_H
 
-#include "accelerometer_controller.h"
-#include "ble_controller.h"
-#include "connectivity_controller.h"
 #include "dashboard_state.h"
 #include "dashboard_ui.h"
-#include "json_configuration_parser.h"
-#include "preferences_controller.h"
 
-#include "Displays/GC9A01_driver.h"
-#include "Graphics/display_engine.h"
-#include "Sensors/QMI8658_driver.h"
+#include "Connectivity/ble_controller.h"
+#include "Connectivity/connectivity_controller.h"
+#include "Decoders/json_configuration_parser.h"
+#include "Sensors/accelerometer_controller.h"
+#include "Storage/preferences_controller.h"
+
+#include <Displays/GC9A01_driver.h>
+#include <Graphics/display_engine.h>
+#include <Sensors/QMI8658_driver.h>
 
 class MainApp
 {

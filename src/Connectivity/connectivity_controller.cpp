@@ -1,7 +1,8 @@
 #include "connectivity_controller.h"
 
 #include "ble_controller.h"
-#include "dashboard_state.h"
+
+#include "Core/dashboard_state.h"
 
 ConnectivityController::ConnectivityController(BLEController& ble, DashBoardState& dashBoardState)
   : m_ble(ble)
