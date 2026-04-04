@@ -17,9 +17,64 @@ void MainApp::setup()
 {
   Serial.begin(115200);
 
-  m_bleController.setConfigurationChunkCallback([this](const std::string& data){ m_jsonConfigurationParser.pushNewData(data); });
-  m_bleController.init();
+  // Wait serial port for max 4s if needed
+  uint32_t startTime = millis();
+  while (!Serial && (millis() - startTime < 4000));
+
+  Serial.println("\n=== DEBUG CONSOLE ACTIVE ===");
+
+  initHardware();
+  connectAll();
+
+  m_preferencesController.init();
+  m_preferencesController.loadValues();
+
   m_bleController.startAdvertising();
+
+  m_dashBoard.updateVersionLabel("v3");
+}
+
+void MainApp::loop()
+{
+  lv_timer_handler();
+
+  m_bleController.process();
+
+  m_accelerometerController.update();
+
+  delay(5);
+}
+
+void MainApp::initHardware()
+{
+  m_qmi8658.init();
+
+  lv_init();
+
+  lv_disp_t* display = m_displayEngine.init();
+  m_dashBoard.init(display);
+
+  pinMode(Configuration::Display::pinBacklight, OUTPUT);
+  digitalWrite(Configuration::Display::pinBacklight, HIGH);
+
+  const esp_timer_create_args_t tick_timer_args =
+  {
+    .callback = &MainApp::lv_tick_task,
+    .arg = this,
+    .dispatch_method = ESP_TIMER_TASK,
+    .name = "lv_tick",
+    .skip_unhandled_events = false
+  };
+  esp_timer_handle_t lv_tick_timer;
+  esp_timer_create(&tick_timer_args, &lv_tick_timer);
+  esp_timer_start_periodic(lv_tick_timer, 1000);
+
+  m_bleController.init();
+}
+
+void MainApp::connectAll()
+{
+  m_bleController.setConfigurationChunkCallback([this](const std::string& data){ m_jsonConfigurationParser.pushNewData(data); });
 
   m_dashBoardState.limit.attach([this](const int& newLimit)
   {
@@ -46,56 +101,6 @@ void MainApp::setup()
   {
     m_dashBoard.updateBluetoothLabel(deviceConnected);
   });
-
-  // Wait serial port for max 4s if needed
-  uint32_t startTime = millis();
-  while (!Serial && (millis() - startTime < 4000));
-
-  Serial.println("\n=== DEBUG CONSOLE ACTIVE ===");
-
-  bool accelerometerOK = m_qmi8658.init();
-
-  lv_init();
-
-  lv_disp_t* display = m_displayEngine.init();
-  m_dashBoard.init(display);
-
-  pinMode(Configuration::Display::pinBacklight, OUTPUT);
-  digitalWrite(Configuration::Display::pinBacklight, HIGH);
-
-  const esp_timer_create_args_t tick_timer_args =
-  {
-    .callback = &MainApp::lv_tick_task,
-    .arg = this,
-    .dispatch_method = ESP_TIMER_TASK,
-    .name = "lv_tick",
-    .skip_unhandled_events = false
-  };
-  esp_timer_handle_t lv_tick_timer;
-  esp_timer_create(&tick_timer_args, &lv_tick_timer);
-  esp_timer_start_periodic(lv_tick_timer, 1000);
-
-  m_preferencesController.init();
-
-  if (accelerometerOK)
-  {
-    m_dashBoard.updateVersionLabel("v3");
-  }
-  else
-  {
-    m_dashBoard.updateVersionLabel("QMI Failed");
-  }
-}
-
-void MainApp::loop()
-{
-  lv_timer_handler();
-
-  m_bleController.process();
-
-  m_accelerometerController.update();
-
-  delay(5);
 }
 
 void MainApp::lv_tick_task(void *arg)

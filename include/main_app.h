@@ -21,6 +21,9 @@ public:
   void loop();
 
 private:
+  void initHardware();
+  void connectAll();
+
   static void lv_tick_task(void *arg);
 
 private:

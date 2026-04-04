@@ -19,11 +19,14 @@ void PreferencesController::init()
 {
   m_preferences.begin(configurationSpaceKey.c_str(), false);
 
-  int savedLimit = m_preferences.getInt(limitKey.c_str(), defaultLimitValue);
-  m_dashBoardState.limit = savedLimit;
-
   m_dashBoardState.limit.attach([this](const int& newLimit)
   {
     m_preferences.putInt(limitKey.c_str(), newLimit);
   });
+}
+
+void PreferencesController::loadValues()
+{
+  int savedLimit = m_preferences.getInt(limitKey.c_str(), defaultLimitValue);
+  m_dashBoardState.limit = savedLimit;
 }

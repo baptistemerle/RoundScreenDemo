@@ -11,6 +11,7 @@ public:
   PreferencesController(DashBoardState& state);
 
   void init();
+  void loadValues();
 
 private:
     DashBoardState& m_dashBoardState;
