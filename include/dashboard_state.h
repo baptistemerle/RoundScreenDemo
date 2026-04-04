@@ -1,7 +1,7 @@
 #ifndef DASHBOARD_STATE_H
 #define DASHBOARD_STATE_H
 
-#include "observable_value.h"
+#include "Patterns/observable_value.h"
 
 struct DashBoardState
 {

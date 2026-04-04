@@ -1,7 +1,8 @@
 #include "accelerometer_controller.h"
 
-#include "iaccelerometer.h"
 #include "dashboard_state.h"
+
+#include "Interfaces/iaccelerometer.h"
 
 #include <Arduino.h>
 

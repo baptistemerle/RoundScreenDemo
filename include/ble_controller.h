@@ -2,7 +2,8 @@
 #define BLE_CONTROLLER_H
 
 #include "iconnection_observer.h"
-#include "single_observable.h"
+
+#include "Patterns/single_observable.h"
 
 #include <BLEServer.h>
 

@@ -1,0 +1,9 @@
+[submodule "lib/ESP32Hardware"]
+	path = lib/ESP32Hardware
+	url = https://github.com/baptistemerle/ESP32Hardware
+[submodule "lib/ESP32Utilities"]
+	path = lib/ESP32Utilities
+	url = https://github.com/baptistemerle/ESP32Utilities
+[submodule "lib/ESP32Graphics"]
+	path = lib/ESP32Graphics
+	url = https://github.com/baptistemerle/ESP32Graphics

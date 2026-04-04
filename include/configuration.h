@@ -2,8 +2,9 @@
 #define CONFIGURATION_H
 
 #include "ble_configuration.h"
-#include "GC9A01_driver_configuration.h"
-#include "QMI8658_driver_configuration.h"
+
+#include "Displays/GC9A01_driver_configuration.h"
+#include "Sensors/QMI8658_driver_configuration.h"
 
 namespace Configuration
 {

@@ -6,11 +6,12 @@
 #include "connectivity_controller.h"
 #include "dashboard_state.h"
 #include "dashboard_ui.h"
-#include "display_engine.h"
-#include "GC9A01_driver.h"
 #include "json_configuration_parser.h"
 #include "preferences_controller.h"
-#include "QMI8658_driver.h"
+
+#include "Displays/GC9A01_driver.h"
+#include "Graphics/display_engine.h"
+#include "Sensors/QMI8658_driver.h"
 
 class MainApp
 {
