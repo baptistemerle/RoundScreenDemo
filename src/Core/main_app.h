@@ -1,14 +1,13 @@
 #ifndef MAIN_APP_H
 #define MAIN_APP_H
 
-#include "dashboard_state.h"
-#include "dashboard_ui.h"
-
 #include "Connectivity/ble_controller.h"
 #include "Connectivity/connectivity_controller.h"
+#include "Core/dashboard_state.h"
 #include "Decoders/json_configuration_parser.h"
 #include "Sensors/accelerometer_controller.h"
 #include "Storage/preferences_controller.h"
+#include "UI/dashboard_ui.h"
 
 #include <Displays/GC9A01_driver.h>
 #include <Graphics/display_engine.h>
