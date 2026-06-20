@@ -4,8 +4,6 @@
 
 #include <Interfaces/iaccelerometer.h>
 
-#include <Arduino.h>
-
 AccelerometerController::AccelerometerController(IAccelerometer& accelerometer, DashBoardState& dashBoardState)
   : m_accelerometer(accelerometer)
   , m_dashBoardState(dashBoardState)

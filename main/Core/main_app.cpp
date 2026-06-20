@@ -2,6 +2,9 @@
 
 #include "configuration.h"
 
+#include  <driver/gpio.h>
+#include <nvs_flash.h>
+
 MainApp::MainApp()
   : m_displayDriver(Configuration::Display::defaultConfiguration)
   , m_qmi8658(Configuration::Accelerometer::defaultConfiguration)
@@ -15,13 +18,16 @@ MainApp::MainApp()
 
 void MainApp::setup()
 {
-  Serial.begin(115200);
+  TickType_t startTick = xTaskGetTickCount();
+  const TickType_t timeoutTicks = pdMS_TO_TICKS(4000);
 
-  // Wait serial port for max 4s if needed
-  uint32_t startTime = millis();
-  while (!Serial && (millis() - startTime < 4000));
+  while ((xTaskGetTickCount() - startTick) < timeoutTicks)
+  {
+    vTaskDelay(pdMS_TO_TICKS(100));
+    break;
+  }
 
-  Serial.println("\n=== DEBUG CONSOLE ACTIVE ===");
+  printf("\n=== DEBUG CONSOLE ACTIVE ===\n");
 
   initHardware();
   connectAll();
@@ -31,31 +37,51 @@ void MainApp::setup()
 
   m_bleController.startAdvertising();
 
-  m_dashBoard.updateVersionLabel("v3");
+  m_dashBoard.updateVersionLabel("v4");
 }
 
 void MainApp::loop()
 {
-  lv_timer_handler();
-
   m_bleController.process();
 
   m_accelerometerController.update();
 
-  delay(5);
+  uint32_t dynamicDelay = lv_timer_handler();
+  if (dynamicDelay < 1)
+  {
+    dynamicDelay = 1;
+  }
+  else if (dynamicDelay > 16)
+  {
+    dynamicDelay = 16;
+  }
+
+  vTaskDelay(pdMS_TO_TICKS(dynamicDelay));
 }
 
 void MainApp::initHardware()
 {
-  m_qmi8658.init();
+  esp_err_t ret = nvs_flash_init();
+  if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
+  {
+    ESP_ERROR_CHECK(nvs_flash_erase());
+    ret = nvs_flash_init();
+  }
+  ESP_ERROR_CHECK(ret);
+
+  i2c_master_bus_handle_t bus_handle;
+  ESP_ERROR_CHECK(i2c_new_master_bus(&Configuration::I2C::i2cConfig, &bus_handle));
+
+  m_qmi8658.init(bus_handle);
 
   lv_init();
 
   lv_disp_t* display = m_displayEngine.init();
   m_dashBoard.init(display);
 
-  pinMode(Configuration::Display::pinBacklight, OUTPUT);
-  digitalWrite(Configuration::Display::pinBacklight, HIGH);
+  gpio_reset_pin(Configuration::Display::pinBacklight);
+  gpio_set_direction(Configuration::Display::pinBacklight, GPIO_MODE_OUTPUT);
+  gpio_set_level(Configuration::Display::pinBacklight, 1);
 
   const esp_timer_create_args_t tick_timer_args =
   {
@@ -78,23 +104,26 @@ void MainApp::connectAll()
 
   m_dashBoardState.limit.attach([this](const int& newLimit)
   {
-    Serial.println("Update dashboard with limit");
+    printf("Update dashboard with limit\n");
     m_dashBoard.updateLimitLabel(newLimit);
   });
 
   m_dashBoardState.accelerometerXValue.attach([this](const float& xValue)
   {
-    m_dashBoard.updateXAxisValue(map(xValue * 100, -100, 100, 0, 100));
+    float mappedValue = (xValue + 1.0f) * 50.0f;
+    m_dashBoard.updateXAxisValue(static_cast<int>(mappedValue));
   });
 
   m_dashBoardState.accelerometerYValue.attach([this](const float& yValue)
   {
-    m_dashBoard.updateYAxisValue(map(yValue * 100, -100, 100, 0, 100));
+    float mappedValue = (yValue + 1.0f) * 50.0f;
+    m_dashBoard.updateYAxisValue(static_cast<int>(mappedValue));
   });
 
   m_dashBoardState.accelerometerZValue.attach([this](const float& zValue)
   {
-    m_dashBoard.updateZAxisValue(map(zValue * 100, -100, 100, 0, 100));
+    float mappedValue = (zValue + 1.0f) * 50.0f;
+    m_dashBoard.updateZAxisValue(static_cast<int>(mappedValue));
   });
 
   m_dashBoardState.bluetootDeviceConnected.attach([this](const bool& deviceConnected)

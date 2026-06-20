@@ -1,7 +1,7 @@
 #ifndef JSON_CONFIGURATION_PARSER_H
 #define JSON_CONFIGURATION_PARSER_H
 
-#include <Protocols/length_payload_assembler.h>
+#include <Protocols/length_payload_assembler.hpp>
 
 class DashBoardState;
 

@@ -2,8 +2,7 @@
 
 #include "ble_configuration.h"
 
-#include <BLEDevice.h>
-#include <BLE2902.h>
+#include <NimBLEDevice.h>
 
 BLEController::BLEController(const BLE_Configuration& configuration)
   : m_configuration(configuration)
@@ -12,23 +11,28 @@ BLEController::BLEController(const BLE_Configuration& configuration)
 
 void BLEController::init()
 {
-  BLEDevice::init(m_configuration.name);
+  NimBLEDevice::init(m_configuration.name.data());
 
-  BLEServer* server = BLEDevice::createServer();
+  NimBLEServer* server = NimBLEDevice::createServer();
   server->setCallbacks(this);
 
-  BLEService* service = server->createService(m_configuration.serviceUUID);
+  NimBLEService* service = server->createService(m_configuration.serviceUUID.data());
 
-  m_configurationChannel = service->createCharacteristic(m_configuration.configurationChannelUUID, BLECharacteristic::PROPERTY_WRITE);
+  m_configurationChannel = service->createCharacteristic(m_configuration.configurationChannelUUID.data(), NIMBLE_PROPERTY::WRITE);
   m_configurationChannel->setCallbacks(this);
 
-  BLEDescriptor* descriptor = new BLEDescriptor((uint16_t)0x2901);
+  NimBLEDescriptor* descriptor = m_configurationChannel->createDescriptor
+  (
+    "2901",
+    NIMBLE_PROPERTY::READ
+  );
   descriptor->setValue("Configuration JSON");
-  m_configurationChannel->addDescriptor(descriptor);
 
-  m_configurationChannel->addDescriptor(new BLE2902());
-
-  service->start();
+  m_configurationChannel->createDescriptor
+  (
+    "2902",
+    NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::WRITE
+  );
 }
 
 void BLEController::setConfigurationChunkCallback(std::function<void(const std::string&)> callback)
@@ -38,10 +42,18 @@ void BLEController::setConfigurationChunkCallback(std::function<void(const std::
 
 void BLEController::startAdvertising()
 {
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
-  pAdvertising->addServiceUUID(m_configuration.serviceUUID);
-  pAdvertising->setScanResponse(true);
-  BLEDevice::startAdvertising();
+  NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
+
+  NimBLEAdvertisementData advertisingData;
+  advertisingData.setFlags(BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP);
+  advertisingData.addServiceUUID(NimBLEUUID(m_configuration.serviceUUID.data()));
+  pAdvertising->setAdvertisementData(advertisingData);
+
+  NimBLEAdvertisementData scanData;
+  scanData.setName(m_configuration.name.data());
+  pAdvertising->setScanResponseData(scanData);
+
+  NimBLEDevice::startAdvertising();
 }
 
 void BLEController::process()
@@ -75,18 +87,27 @@ void BLEController::process()
   }
 }
 
-void BLEController::onConnect(BLEServer* server)
+void BLEController::onConnect(NimBLEServer* server, NimBLEConnInfo& info)
 {
+  (void)server;
+  (void)info;
+
   m_pendingConnect = true;
 }
 
-void BLEController::onDisconnect(BLEServer* server)
+void BLEController::onDisconnect(NimBLEServer* server, NimBLEConnInfo& info, int reason)
 {
+  (void)server;
+  (void)info;
+  (void)reason;
+
   m_pendingDisconnect = true;
 }
 
-void BLEController::onWrite(BLECharacteristic* characteristic)
+void BLEController::onWrite(NimBLECharacteristic* characteristic, NimBLEConnInfo& info)
 {
+  (void)info;
+
   if (characteristic != m_configurationChannel)
     return;
 
