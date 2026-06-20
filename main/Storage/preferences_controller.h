@@ -1,7 +1,7 @@
 #ifndef PREFERENCES_CONTROLLER_H
 #define PREFERENCES_CONTROLLER_H
 
-#include <Preferences.h>
+#include <nvs.h>
 
 class DashBoardState;
 
@@ -15,7 +15,8 @@ public:
 
 private:
     DashBoardState& m_dashBoardState;
-    Preferences m_preferences;
+    nvs_handle_t    m_nvsHandle;
+    bool            m_isInitialized;
 };
 
 #endif // PREFERENCES_CONTROLLER_H

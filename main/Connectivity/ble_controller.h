@@ -1,23 +1,22 @@
 #ifndef BLE_CONTROLLER_H
 #define BLE_CONTROLLER_H
 
+#include "NimBLECharacteristic.h"
 #include "iconnection_observer.h"
 
 #include <Patterns/single_observable.h>
 
-#include <BLEServer.h>
+#include <NimBLEServer.h>
 
 #include <atomic>
 #include <mutex>
 #include <string>
 #include <queue>
 
-class BLEServerCallbacks;
-class BLECharacteristicCallbacks;
 class BLE_Configuration;
 
-class BLEController : public BLEServerCallbacks,
-                      public BLECharacteristicCallbacks,
+class BLEController : public NimBLEServerCallbacks,
+                      public NimBLECharacteristicCallbacks,
                       public SingleObservable<IConnectionObserver>
 {
 public:
@@ -38,15 +37,15 @@ public:
   void process();
 
 private:
-  virtual void onConnect(BLEServer* server) override;
-  virtual void onDisconnect(BLEServer* server) override;
+  virtual void onConnect(NimBLEServer* server, NimBLEConnInfo& info) override;
+  virtual void onDisconnect(NimBLEServer* server, NimBLEConnInfo& info, int reason) override;
 
-  virtual void onWrite(BLECharacteristic *characteristic) override;
+  virtual void onWrite(NimBLECharacteristic *characteristic, NimBLEConnInfo& info) override;
 
 private:
   const BLE_Configuration& m_configuration;
 
-  BLECharacteristic* m_configurationChannel;
+  NimBLECharacteristic* m_configurationChannel;
 
   std::function<void(const std::string&)> m_onConfigurationChunkReceived;
 

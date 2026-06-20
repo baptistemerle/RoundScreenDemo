@@ -2,7 +2,9 @@
 
 #include "Core/dashboard_state.h"
 
-#include <ArduinoJson.h>
+#include <cJSON.h>
+
+#include <memory>
 
 JsonConfigurationParser::JsonConfigurationParser(DashBoardState& dashBoardState)
   : m_dashBoardState(dashBoardState)
@@ -17,15 +19,16 @@ void JsonConfigurationParser::pushNewData(const std::string& data)
 
 void JsonConfigurationParser::jsonReady(const std::string& json)
 {
-  JsonDocument doc;
-  DeserializationError error = deserializeJson(doc, json);
+  std::unique_ptr<cJSON, decltype(&cJSON_Delete)> doc(cJSON_Parse(json.c_str()), cJSON_Delete);
 
-  if (error)
+  if (!doc)
     return;
 
-  if (doc["limit"].is<int>())
+  cJSON* limitItem = cJSON_GetObjectItemCaseSensitive(doc.get(), "limit");
+
+  if (limitItem != nullptr && cJSON_IsNumber(limitItem))
   {
-    int limit = doc["limit"];
+    int limit = limitItem->valueint;
     m_dashBoardState.limit = limit;
   }
 }
