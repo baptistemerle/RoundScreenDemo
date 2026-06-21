@@ -28,6 +28,8 @@ private:
   static void lv_tick_task(void *arg);
 
 private:
+  i2c_master_bus_handle_t m_i2c0_busHandle;
+
   GC9A01Driver m_displayDriver;
   QMI8658Driver m_qmi8658;
 

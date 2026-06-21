@@ -37,7 +37,7 @@ void MainApp::setup()
 
   m_bleController.startAdvertising();
 
-  m_dashBoard.updateVersionLabel("v5");
+  m_dashBoard.updateVersionLabel("v6");
 }
 
 void MainApp::loop()
@@ -61,6 +61,10 @@ void MainApp::loop()
 
 void MainApp::initHardware()
 {
+  ESP_ERROR_CHECK(spi_bus_initialize(Configuration::SPI::spi2_host, &Configuration::SPI::spi2_busConfig, SPI_DMA_CH_AUTO));
+
+  ESP_ERROR_CHECK(i2c_new_master_bus(&Configuration::I2C::i2c0_busConfig, &m_i2c0_busHandle));
+
   esp_err_t ret = nvs_flash_init();
   if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
   {
@@ -69,10 +73,7 @@ void MainApp::initHardware()
   }
   ESP_ERROR_CHECK(ret);
 
-  i2c_master_bus_handle_t bus_handle;
-  ESP_ERROR_CHECK(i2c_new_master_bus(&Configuration::I2C::i2cConfig, &bus_handle));
-
-  m_qmi8658.init(bus_handle);
+  m_qmi8658.init(m_i2c0_busHandle);
 
   lv_init();
 
