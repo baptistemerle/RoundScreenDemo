@@ -37,7 +37,7 @@ void MainApp::setup()
 
   m_bleController.startAdvertising();
 
-  m_dashBoard.updateVersionLabel("v4");
+  m_dashBoard.updateVersionLabel("v5");
 }
 
 void MainApp::loop()

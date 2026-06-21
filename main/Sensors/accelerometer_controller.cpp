@@ -14,7 +14,7 @@ void AccelerometerController::update()
 {
   float accX, accY, accZ;
 
-  if (m_accelerometer.getValues(accX, accY, accZ))
+  if (m_accelerometer.getValues(accX, accY, accZ) == ESP_OK)
   {
     m_dashBoardState.accelerometerXValue = accX;
     m_dashBoardState.accelerometerYValue = accY;
