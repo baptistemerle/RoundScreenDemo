@@ -1,11 +1,11 @@
 #ifndef BLE_CONTROLLER_H
 #define BLE_CONTROLLER_H
 
-#include "NimBLECharacteristic.h"
 #include "iconnection_observer.h"
 
 #include <Patterns/single_observable.h>
 
+#include <NimBLECharacteristic.h>
 #include <NimBLEServer.h>
 
 #include <atomic>
