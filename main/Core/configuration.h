@@ -41,14 +41,14 @@ namespace Configuration
 
     constexpr GC9A01Driver_Configuration defaultConfiguration =
     {
-      .spiHost =           SPI2_HOST,
-      .spiFrequencyWrite = 80000000, // 80MHz
-      .spiPinChipSelect =  GPIO_NUM_9,
-      .pinReset =          GPIO_NUM_12,
-      .pinDataCommand =    GPIO_NUM_8,
+      .spiHost =          SPI2_HOST,
+      .spiSpeedHz =       80 * 1000 * 1000, // 80MHz
+      .spiPinChipSelect = GPIO_NUM_9,
+      .pinReset =         GPIO_NUM_12,
+      .pinDataCommand =   GPIO_NUM_8,
 
-      .screenWidth =       width,
-      .screenHeight =      height,
+      .screenWidth =  width,
+      .screenHeight = height,
     };
 
     constexpr gpio_num_t pinBacklight = GPIO_NUM_40;
@@ -78,11 +78,11 @@ namespace Configuration
     {
       spi_bus_config_t config = {};
 
-      config.sclk_io_num = GPIO_NUM_10;
-      config.mosi_io_num = GPIO_NUM_11;
-      config.miso_io_num = -1;
-      config.quadwp_io_num = -1;
-      config.quadhd_io_num = -1;
+      config.sclk_io_num =     GPIO_NUM_10;
+      config.mosi_io_num =     GPIO_NUM_11;
+      config.miso_io_num =     -1;
+      config.quadwp_io_num =   -1;
+      config.quadhd_io_num =   -1;
       config.max_transfer_sz = 64 * 1024;
 
       return config;

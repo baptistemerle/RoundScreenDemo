@@ -14,7 +14,8 @@ MainApp::MainApp()
   , m_jsonConfigurationParser(m_dashBoardState)
   , m_accelerometerController(m_qmi8658, m_dashBoardState)
   , m_preferencesController(m_dashBoardState)
-{}
+{
+}
 
 void MainApp::setup()
 {
@@ -37,7 +38,7 @@ void MainApp::setup()
 
   m_bleController.startAdvertising();
 
-  m_dashBoard.updateVersionLabel("v6");
+  m_dashBoard.updateVersionLabel("v7");
 }
 
 void MainApp::loop()
